@@ -6,6 +6,7 @@ module GameEngine {
     requires javafx.graphics;
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;
+    requires java.desktop;
 
     uses com.mathiasyde.Datamodels.GameModule;
 }
