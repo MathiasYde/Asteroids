@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class Entity {
@@ -21,6 +22,15 @@ public class Entity {
         this.children.add(child);
         child.parent = this;
         return child;
+    }
+
+    public void traverse(Consumer<Entity> consumer) {
+        consumer.accept(this);
+        children.forEach(child -> child.traverse(consumer));
+    }
+
+    public void each(Consumer<Component> consumer) {
+        components.values().stream().filter(Component::enabled).forEach(consumer);
     }
 
     /// put component on this entity

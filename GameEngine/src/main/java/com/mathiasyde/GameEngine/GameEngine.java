@@ -1,8 +1,14 @@
 package com.mathiasyde.GameEngine;
 
+import com.mathiasyde.Components.LineRender;
+import com.mathiasyde.Components.Spaceship;
+import com.mathiasyde.Components.Transform;
+import com.mathiasyde.Datamodels.Entity;
 import com.mathiasyde.Datamodels.GameModule;
+import com.mathiasyde.Datamodels.Vector2f;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.canvas.Canvas;
 
@@ -16,6 +22,8 @@ import java.util.ServiceLoader;
 
 public class GameEngine extends Application {
     protected final static Logger LOGGER = LogManager.getLogger(GameEngine.class);
+
+    public static final Entity root = new Entity("Root");
 
     public static void main(String[] args) {
         Configurator.setLevel(LOGGER, Level.DEBUG);
@@ -40,6 +48,15 @@ public class GameEngine extends Application {
 
         ServiceLoader<GameModule> loader = ServiceLoader.load(GameModule.class);
         loader.forEach(module -> LOGGER.debug("Module loaded: {}", module.getClass().getName()));
+
+        GameEngine.root.put(new Transform(new Vector2f(200f, 200f), new Vector2f(20f, 20f), 45f));
+        GameEngine.root.put(new Spaceship());
+        GameEngine.root.put(new LineRender());
+
+        GameEngine.root.traverse(entity -> entity.each(component -> component.start()));
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        GameEngine.root.traverse(entity -> entity.each(component -> component.render(gc)));
 
         stage.show();
     }

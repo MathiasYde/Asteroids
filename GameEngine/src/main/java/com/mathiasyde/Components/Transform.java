@@ -1,7 +1,38 @@
 package com.mathiasyde.Components;
 
 import com.mathiasyde.Datamodels.Component;
+import com.mathiasyde.Datamodels.Vector2f;
 
 public class Transform extends Component {
-    public Transform() {}
+    private Vector2f position;
+    private Vector2f scale;
+    private float rotation;
+
+    public Transform() {
+        position = new Vector2f(0f, 0f);
+        scale = new Vector2f(1f, 1f);
+        rotation = 0f;
+    }
+
+    public Transform(Vector2f position, Vector2f scale, float rotation) {
+        this.position = position;
+        this.scale = scale;
+        this.rotation = rotation;
+    }
+
+    public void translate(Vector2f translation) {
+        position = position.add(translation);
+    }
+
+    public Vector2f position() {
+        return position;
+    }
+
+    public Vector2f scale() {
+        return scale;
+    }
+
+    public float rotation() {
+        return rotation;
+    }
 }
