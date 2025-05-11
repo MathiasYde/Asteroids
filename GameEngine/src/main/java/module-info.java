@@ -1,5 +1,7 @@
 module GameEngine {
     exports com.mathiasyde.GameEngine;
+    exports com.mathiasyde.Datamodels;
+    exports com.mathiasyde.Components;
 
     requires javafx.graphics;
     requires org.apache.logging.log4j;
