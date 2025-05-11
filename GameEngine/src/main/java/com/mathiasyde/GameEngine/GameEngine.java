@@ -1,5 +1,6 @@
 package com.mathiasyde.GameEngine;
 
+import com.mathiasyde.Datamodels.GameModule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -10,6 +11,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+
+import java.util.ServiceLoader;
 
 public class GameEngine extends Application {
     protected final static Logger LOGGER = LogManager.getLogger(GameEngine.class);
@@ -34,6 +37,9 @@ public class GameEngine extends Application {
         StackPane root = new StackPane(canvas);
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
+
+        ServiceLoader<GameModule> loader = ServiceLoader.load(GameModule.class);
+        loader.forEach(module -> LOGGER.debug("Module loaded: {}", module.getClass().getName()));
 
         stage.show();
     }
