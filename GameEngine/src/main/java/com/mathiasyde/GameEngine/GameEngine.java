@@ -30,7 +30,7 @@ public class GameEngine extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.setTitle("Asteroids");
 
         Canvas canvas = new Canvas(800, 600);
