@@ -42,7 +42,7 @@ public class TestEntity {
         root.remove(Transform.class);
         assertFalse(root.has(Transform.class));
         assertNotEquals(root, transform.entity);
-        assertEquals(null, transform.entity);
+        assertNull(transform.entity);
     }
 
     @Test
