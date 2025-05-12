@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>Player</artifactId>
+    <artifactId>Weapon</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -20,18 +20,6 @@
         <dependency>
             <groupId>com.mathiasyde</groupId>
             <artifactId>GameEngine</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mathiasyde</groupId>
-            <artifactId>Weapon</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mathiasyde</groupId>
-            <artifactId>Spaceship</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

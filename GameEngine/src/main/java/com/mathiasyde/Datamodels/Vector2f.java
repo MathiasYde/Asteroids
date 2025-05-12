@@ -15,6 +15,11 @@ public class Vector2f {
         this.y = y;
     }
 
+    public Vector2f(double x, double y) {
+        this.x = (float) x;
+        this.y = (float) y;
+    }
+
     public float length() {
         return (float) Math.sqrt(x * x + y * y);
     }
@@ -59,5 +64,10 @@ public class Vector2f {
 
     public float y() {
         return y;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Vector2f(%f, %f)", x, y);
     }
 }

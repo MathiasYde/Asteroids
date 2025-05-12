@@ -32,7 +32,23 @@ public class Transform extends Component {
         return scale;
     }
 
+    public void scale(Vector2f scale) {
+        this.scale = scale;
+    }
+
+    public void scale(float scale) {
+        this.scale = this.scale.mul(scale);
+    }
+
     public float rotation() {
         return rotation;
+    }
+
+    public void rotate(float radians) {
+        rotation += radians;
+    }
+
+    public Vector2f forward() {
+        return new Vector2f(Math.cos(rotation), Math.sin(rotation));
     }
 }

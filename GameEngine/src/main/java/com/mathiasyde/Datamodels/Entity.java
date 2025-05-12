@@ -20,6 +20,10 @@ public class Entity {
         this.name = name;
     }
 
+    public String name() {
+        return name;
+    }
+
     public Entity spawn(Entity child) {
         GameEngine.LOGGER.debug("[Entity::spawn] spawning entity: {}", child.name);
 
@@ -46,6 +50,36 @@ public class Entity {
         component.entity = this;
         this.components.put(component.getClass(), component);
         return (T) component;
+    }
+
+    /// put component with identifier from registry on this entity
+    /// @param identifier the component identifier to put on this entity
+    public Component put(String identifier) {
+        GameEngine.LOGGER.debug("[Entity::put(String)] put '{}' on {}", identifier, this.name);
+
+        Class<? extends Component> clazz = GameEngine.components.get(identifier);
+        if (clazz != null) {
+            Component component = GameEngine.components.create(identifier);
+            if (component != null) {
+                component.entity = this;
+                components.put(clazz, component);
+                return component;
+            }
+        }
+
+        GameEngine.LOGGER.warn("[Entity::put(String)] No component registered with identifier: {}", identifier);
+        return null;
+    }
+
+    /// put component with identifier from registry on this entity,
+    /// if the component is present, apply the consumer to the component
+    /// @param identifier the component identifier to put on this entity
+    /// @param consumer the consumer to apply to the component instance
+    public <T extends Component> void put(String identifier, Consumer<T> consumer) {
+        Component component = this.put(identifier);
+        if (component != null) {
+            consumer.accept((T)component);
+        }
     }
 
     /// remove the component of type on this entity

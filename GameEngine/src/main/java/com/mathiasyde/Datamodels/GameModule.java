@@ -1,5 +1,6 @@
 package com.mathiasyde.Datamodels;
 
 public abstract class GameModule {
-    public abstract void start();
+    public void register() {}
+    public void start() {}
 }

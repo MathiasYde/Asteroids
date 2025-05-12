@@ -3,12 +3,14 @@ package com.mathiasyde.Components;
 import com.mathiasyde.Datamodels.Component;
 import com.mathiasyde.Datamodels.Vector2f;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LineRender extends Component {
     public List<Vector2f> points = new ArrayList<>();
+    public Color color = Color.BLACK;
 
     private Transform transform;
 
@@ -26,9 +28,10 @@ public class LineRender extends Component {
         gc.save();
         gc.translate(transform.position().x(), transform.position().y());
         gc.scale(transform.scale().x(), transform.scale().y());
-        gc.rotate(transform.rotation());
+        gc.rotate(transform.rotation() * 180 / Math.PI);
 
         gc.setLineWidth(0.2f);
+        gc.setStroke(color);
 
         int n = points.size() + 1;
         double[] x = new double[n];

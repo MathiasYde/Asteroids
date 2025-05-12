@@ -12,6 +12,8 @@
     <modules>
         <module>GameEngine</module>
         <module>Player</module>
+        <module>Weapon</module>
+        <module>Spaceship</module>
     </modules>
 
     <properties>
@@ -64,6 +66,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
+                <inherited>false</inherited>
                 <executions>
                     <execution>
                         <goals>
