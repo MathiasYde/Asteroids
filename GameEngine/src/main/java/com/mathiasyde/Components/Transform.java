@@ -14,6 +14,12 @@ public class Transform extends Component {
         rotation = 0f;
     }
 
+    public Transform(Vector2f position) {
+        this.position = position;
+        this.scale = new Vector2f(1f, 1f);
+        this.rotation = 0f;
+    }
+
     public Transform(Vector2f position, Vector2f scale, float rotation) {
         this.position = position;
         this.scale = scale;

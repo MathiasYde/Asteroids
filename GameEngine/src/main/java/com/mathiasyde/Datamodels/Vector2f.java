@@ -20,6 +20,11 @@ public class Vector2f {
         this.y = (float) y;
     }
 
+    public Vector2f() {
+        this.x = 0f;
+        this.y = 0f;
+    }
+
     public float length() {
         return (float) Math.sqrt(x * x + y * y);
     }

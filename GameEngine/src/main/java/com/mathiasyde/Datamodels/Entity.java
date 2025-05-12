@@ -2,10 +2,9 @@ package com.mathiasyde.Datamodels;
 
 import com.mathiasyde.GameEngine.GameEngine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -20,6 +19,24 @@ public class Entity {
         this.name = name;
     }
 
+    /// accumulate a value from component instances of component type found in parent traversal
+    /// @param type the component type to use in reduction
+    /// @param initial the initial value to use in reduction (usually a zero value)
+    /// @param reducer the reducer function to apply to each component instance
+    /// @return <U> the reduced value
+    public <T extends Component, U> U reduce(Class<T> type, Supplier<U> initial, BiFunction<T, U, U> reducer) {
+        U sum = initial.get();
+
+        Entity current = this;
+        while (current != null) {
+            Component component = current.get(type);
+            sum = reducer.apply((T)component, sum);
+            current = current.parent;
+        }
+
+        return sum;
+    }
+
     public void dispatch(String event, Object... args) {
         GameEngine.LOGGER.debug("[Entity::dispatch] dispatching event: {} to {}", event, this.name);
         each(component -> {
@@ -30,9 +47,7 @@ public class Entity {
 
                 Method method = component.getClass().getMethod(event, types);
                 method.invoke(component, args);
-            } catch (Exception error) {
-                GameEngine.LOGGER.warn("[Entity::dispatch] dispatching error: {}", error);
-            }
+            } catch (Exception error) {}
         });
     }
 
