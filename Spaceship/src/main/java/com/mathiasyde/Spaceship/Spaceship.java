@@ -28,13 +28,11 @@ public class Spaceship extends Component {
 
     private LineRender line;
     private Transform transform;
-    private Weapon weapon;
 
     @Override
     public void awake() {
         line = require(LineRender.class);
         transform = require(Transform.class);
-        weapon = require(Weapon.class);
     }
 
     @Override
@@ -55,25 +53,8 @@ public class Spaceship extends Component {
         Vector2f fdt = transform.forward().mul(velocity * Time.deltaTime);
         transform.translate(fdt);
 
-        System.out.println(velocity);
-
-////        Vector2f move = new Vector2f(0.0f, 0.0f);
-//        float rotate = (float) (Math.random() - 0.5f) * 0.1f;
-//        float thrust = Math.random() < 0.2f ? 1.0f : 0.0f;
-//
-//        if (Math.random() < 0.4f) {
-//            weapon.shoot();
-//        }
-//
-//        System.out.println("---------");
-//        System.out.println("rotate = " + rotate);
-//        System.out.println("thrust = " + thrust);
-//        transform.rotate(rotate * Time.deltaTime * 40f);
-//
-//        System.out.println("transform.forward() = " + transform.forward());
-//        Vector2f tdt = transform.forward().mul(thrust * 100f * Time.deltaTime);
-//
-//        System.out.println("tdt = " + tdt);
-//        transform.translate(tdt);
+        if (Math.random() < 0.2f) {
+            entity.dispatch("shoot");
+        }
     }
 }

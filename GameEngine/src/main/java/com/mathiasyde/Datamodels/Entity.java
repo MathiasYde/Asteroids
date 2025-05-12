@@ -20,6 +20,22 @@ public class Entity {
         this.name = name;
     }
 
+    public void dispatch(String event, Object... args) {
+        GameEngine.LOGGER.debug("[Entity::dispatch] dispatching event: {} to {}", event, this.name);
+        each(component -> {
+            try {
+                Class<?>[] types = Arrays.stream(args)
+                        .map(Object::getClass)
+                        .toArray(Class<?>[]::new);
+
+                Method method = component.getClass().getMethod(event, types);
+                method.invoke(component, args);
+            } catch (Exception error) {
+                GameEngine.LOGGER.warn("[Entity::dispatch] dispatching error: {}", error);
+            }
+        });
+    }
+
     public String name() {
         return name;
     }
@@ -37,6 +53,8 @@ public class Entity {
         children.forEach(child -> child.traverse(consumer));
     }
 
+    /// apply a consumer to each enabled component of this entity
+    /// @param consumer the consumer to apply to each enabled component of this entity
     public void each(Consumer<Component> consumer) {
         components.values().stream().filter(Component::enabled).forEach(consumer);
     }
