@@ -1,5 +1,7 @@
 package com.mathiasyde.Datamodels;
 
+import com.mathiasyde.GameEngine.GameEngine;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,8 @@ public class Entity {
     }
 
     public Entity spawn(Entity child) {
+        GameEngine.LOGGER.debug("[Entity::spawn] spawning entity: {}", child.name);
+
         this.children.add(child);
         child.parent = this;
         return child;
@@ -37,6 +41,8 @@ public class Entity {
     /// @param component the component instance to put onto this entity
     /// @return <T> the component instance that has been put onto this entity
     public <T extends Component> T put(Component component) {
+        GameEngine.LOGGER.debug("[Entity::put(Component)] put {} on {}", component.getClass().getSimpleName(), this.name);
+
         component.entity = this;
         this.components.put(component.getClass(), component);
         return (T) component;
@@ -46,6 +52,8 @@ public class Entity {
     /// @param type the component type to remove from this entity
     /// @return <T> the component instance, if present, that has been removed from this entity
     public <T extends Component> T remove(Class<T> type) {
+        GameEngine.LOGGER.debug("[Entity::remove(Class)] remove {} from {}", type.getSimpleName(), this.name);
+
         if (has(type)) {
             Component component = get(type);
             if (component != null) {
