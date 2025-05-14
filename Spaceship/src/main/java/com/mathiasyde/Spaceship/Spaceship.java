@@ -5,7 +5,6 @@ import com.mathiasyde.Components.Transform;
 import com.mathiasyde.Datamodels.Component;
 import com.mathiasyde.Datamodels.Vector2f;
 import com.mathiasyde.GameEngine.Time;
-import com.mathiasyde.Weapon.Weapon;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;

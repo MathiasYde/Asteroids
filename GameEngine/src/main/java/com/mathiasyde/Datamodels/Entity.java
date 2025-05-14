@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class Entity {
+    private boolean enabled = true;
     private final List<Entity> children = new ArrayList<>();
     private final Map<Class<? extends Component>, Component> components = new HashMap<>();
 
@@ -20,6 +21,7 @@ public class Entity {
     }
 
     /// accumulate a value from component instances of component type found in parent traversal
+    /// stops at the first disabled parent
     /// @param type the component type to use in reduction
     /// @param initial the initial value to use in reduction (usually a zero value)
     /// @param reducer the reducer function to apply to each component instance
@@ -28,9 +30,9 @@ public class Entity {
         U sum = initial.get();
 
         Entity current = this;
-        while (current != null) {
+        while (current != null && current.enabled) {
             Component component = current.get(type);
-            sum = reducer.apply((T)component, sum);
+            sum = reducer.apply(type.cast(component), sum);
             current = current.parent;
         }
 
@@ -56,14 +58,19 @@ public class Entity {
     }
 
     public Entity spawn(Entity child) {
-        GameEngine.LOGGER.debug("[Entity::spawn] spawning entity: {}", child.name);
+        GameEngine.LOGGER.debug("[Entity::spawn(Entity)] spawning entity: {}", child.name);
 
         this.children.add(child);
         child.parent = this;
         return child;
     }
 
+    public Entity spawn(String name) {
+        return this.spawn(new Entity(name));
+    }
+
     public void traverse(Consumer<Entity> consumer) {
+        if (enabled == false) { return; }
         consumer.accept(this);
         children.forEach(child -> child.traverse(consumer));
     }
@@ -126,7 +133,7 @@ public class Entity {
             if (component != null) {
                 component.entity = null;
                 components.remove(type);
-                return (T) component;
+                return type.cast(component);
             }
         }
 
@@ -152,7 +159,7 @@ public class Entity {
     /// @param supplier the supplier lambda to generate a new component instance if this entity does not have the component type
     public <T extends Component> T ensure(Class<T> type, Supplier<T> supplier) {
         if (has(type) == false) { put(supplier.get()); }
-        return (T) components.get(type);
+        return type.cast(components.get(type));
     }
 
     public Entity parent() {

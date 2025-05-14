@@ -57,4 +57,10 @@ public class Transform extends Component {
     public Vector2f forward() {
         return new Vector2f(Math.cos(rotation), Math.sin(rotation));
     }
+
+    public void inherit(Transform transform) {
+        this.position = transform.position;
+        this.scale = transform.scale;
+        this.rotation = transform.rotation;
+    }
 }
