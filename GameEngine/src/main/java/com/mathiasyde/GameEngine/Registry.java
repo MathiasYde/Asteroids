@@ -12,7 +12,7 @@ public class Registry<T> {
         assert clazz != null : "Class cannot be null";
         assert !identifier.isEmpty() : "Identifier cannot be empty";
 
-        GameEngine.LOGGER.debug("[Registry::register] Registering {} with identifier '{}'", clazz.getSimpleName(), identifier);
+        GameEngine.LOGGER.debug("[Registry::register] Registering {} entry with identifier '{}'", clazz.getSimpleName(), identifier);
 
         registry.put(identifier, clazz);
     }

@@ -1,6 +1,7 @@
 package com.mathiasyde.Components;
 
 import com.mathiasyde.Datamodels.Component;
+import com.mathiasyde.Datamodels.RenderLayer;
 import com.mathiasyde.Datamodels.Vector2f;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -20,18 +21,18 @@ public class LineRender extends Component {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
+    public void render(RenderLayer layer) {
         if (points.isEmpty()) {
             return;
         }
 
-        gc.save();
-        gc.translate(transform.position().x(), transform.position().y());
-        gc.scale(transform.scale().x(), transform.scale().y());
-        gc.rotate(transform.rotation() * 180 / Math.PI);
+        layer.graphics.save();
+        layer.graphics.translate(transform.position().x(), transform.position().y());
+        layer.graphics.scale(transform.scale().x(), transform.scale().y());
+        layer.graphics.rotate(transform.rotation() * 180 / Math.PI);
 
-        gc.setLineWidth(0.2f);
-        gc.setStroke(color);
+        layer.graphics.setLineWidth(0.2f);
+        layer.graphics.setStroke(color);
 
         int n = points.size() + 1;
         double[] x = new double[n];
@@ -44,7 +45,7 @@ public class LineRender extends Component {
             y[i] = point.y();
         }
 
-        gc.strokePolyline(x, y, n);
-        gc.restore();
+        layer.graphics.strokePolyline(x, y, n);
+        layer.graphics.restore();
     }
 }

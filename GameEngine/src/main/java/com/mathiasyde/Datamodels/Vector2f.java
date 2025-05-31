@@ -25,6 +25,17 @@ public class Vector2f {
         this.y = 0f;
     }
 
+    public static float distance(Vector2f position, Vector2f position1) {
+        return (float) Math.sqrt(
+                Math.pow(position.x - position1.x, 2) +
+                Math.pow(position.y - position1.y, 2)
+        );
+    }
+
+    public static Vector2f fromAngle(float angle) {
+        return new Vector2f((float) Math.cos(angle), (float) Math.sin(angle));
+    }
+
     public float length() {
         return (float) Math.sqrt(x * x + y * y);
     }
@@ -74,5 +85,24 @@ public class Vector2f {
     @Override
     public String toString() {
         return String.format("Vector2f(%f, %f)", x, y);
+    }
+
+    public Vector2f rotate(float angle) {
+        float cos = (float) Math.cos(angle);
+        float sin = (float) Math.sin(angle);
+
+        return new Vector2f(
+                x * cos - y * sin,
+                x * sin + y * cos
+        );
+    }
+
+    public float angle() {
+        return (float) Math.atan2(y, x);
+    }
+
+    public Vector2f scale(boolean enable) {
+        if (enable == false) return Vector2f.ZERO;
+        return this;
     }
 }

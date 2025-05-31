@@ -28,6 +28,7 @@ public abstract class Component {
     public void start() {}
     public void update() {}
     public void lateUpdate() {}
-    public void render(GraphicsContext gc) {}
-
+    public void render(RenderLayer layer) {}
+    public void debug(RenderLayer layer) {}
+    public void gui(RenderLayer layer) {}
 }

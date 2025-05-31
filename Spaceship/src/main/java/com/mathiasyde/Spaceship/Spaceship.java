@@ -4,7 +4,9 @@ import com.mathiasyde.Components.LineRender;
 import com.mathiasyde.Components.Transform;
 import com.mathiasyde.Datamodels.Component;
 import com.mathiasyde.Datamodels.Vector2f;
+import com.mathiasyde.GameEngine.GameEngine;
 import com.mathiasyde.GameEngine.Time;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -42,9 +44,16 @@ public class Spaceship extends Component {
 
     @Override
     public void update() {
-        transform.rotate(1.0f * Time.deltaTime);
+        Vector2f directionals = Vector2f.ZERO;
+        if (GameEngine.keyDown(KeyCode.W)) { directionals = directionals.add(Vector2f.UP); }
+        if (GameEngine.keyDown(KeyCode.S)) { directionals = directionals.add(Vector2f.DOWN); }
+        if (GameEngine.keyDown(KeyCode.A)) { directionals = directionals.add(Vector2f.LEFT); }
+        if (GameEngine.keyDown(KeyCode.D)) { directionals = directionals.add(Vector2f.RIGHT); }
 
-        float thrust = 1.0f;
+        float rotate = directionals.x();
+        float thrust = -directionals.y();
+
+        transform.rotate(rotate * Time.deltaTime * 4f);
 
         float vdt = thrust * acceleration * Time.deltaTime;
         velocity = Math.clamp(velocity + vdt, 0f, maxVelocity);
@@ -52,7 +61,7 @@ public class Spaceship extends Component {
         Vector2f fdt = transform.forward().mul(velocity * Time.deltaTime);
         transform.translate(fdt);
 
-        if (Math.random() < 0.2f) {
+        if (GameEngine.keyDown(KeyCode.SPACE)) {
             entity.dispatch("shoot");
         }
     }

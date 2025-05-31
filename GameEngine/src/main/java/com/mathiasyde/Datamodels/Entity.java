@@ -10,10 +10,10 @@ import java.util.function.Supplier;
 
 public class Entity {
     private boolean enabled = true;
-    private final List<Entity> children = new ArrayList<>();
+    public final List<Entity> children = new ArrayList<>();
     private final Map<Class<? extends Component>, Component> components = new HashMap<>();
 
-    private String name = "Entity";
+    private final String name;
     private Entity parent = null;
 
     public Entity(String name) {
@@ -21,7 +21,6 @@ public class Entity {
     }
 
     /// accumulate a value from component instances of component type found in parent traversal
-    /// stops at the first disabled parent
     /// @param type the component type to use in reduction
     /// @param initial the initial value to use in reduction (usually a zero value)
     /// @param reducer the reducer function to apply to each component instance
@@ -30,7 +29,7 @@ public class Entity {
         U sum = initial.get();
 
         Entity current = this;
-        while (current != null && current.enabled) {
+        while (current != null) {
             Component component = current.get(type);
             sum = reducer.apply(type.cast(component), sum);
             current = current.parent;
@@ -39,17 +38,42 @@ public class Entity {
         return sum;
     }
 
+    public Object dispatch(String component, String event, Object... args) {
+        GameEngine.LOGGER.debug("[Entity::dispatch] dispatching event: {} to component: {} of {}", event, component, this.name);
+        Class<?>[] types = Arrays.stream(args)
+                .map(Object::getClass)
+                .toArray(Class<?>[]::new);
+
+        Component receiver = components.get(GameEngine.components.get(component));
+        if (receiver != null) {
+            try {
+                Method method = receiver.getClass().getMethod(event, types);
+                return method.invoke(receiver, args);
+            } catch (NoSuchMethodException error) {
+            } catch (Exception error) {
+                GameEngine.LOGGER.error("[Entity::dispatch] Error invoking method '{}' on component '{}' on entity '{}'", event, component, this.name, error);
+            }
+        }
+
+        return null;
+    }
+
     public void dispatch(String event, Object... args) {
         GameEngine.LOGGER.debug("[Entity::dispatch] dispatching event: {} to {}", event, this.name);
+        Class<?>[] types = Arrays.stream(args)
+                .map(Object::getClass)
+                .toArray(Class<?>[]::new);
+
         each(component -> {
             try {
-                Class<?>[] types = Arrays.stream(args)
-                        .map(Object::getClass)
-                        .toArray(Class<?>[]::new);
-
                 Method method = component.getClass().getMethod(event, types);
-                method.invoke(component, args);
-            } catch (Exception error) {}
+                Object result = method.invoke(component, args);
+            } catch (NoSuchMethodException error) {
+                // getMethod is going to throw so many NoSuchMethodExceptions
+                // so we can just ignore them since we only want to invoke methods that exist
+            } catch (Exception error) {
+                GameEngine.LOGGER.error("[Entity::dispatch] Error invoking method: {} on component: {} of entity: {}", event, component.getClass().getSimpleName(), this.name, error);
+            }
         });
     }
 
@@ -62,6 +86,8 @@ public class Entity {
 
         this.children.add(child);
         child.parent = this;
+        child.each(Component::awake);
+        child.each(Component::start);
         return child;
     }
 
@@ -72,13 +98,30 @@ public class Entity {
     public void traverse(Consumer<Entity> consumer) {
         if (enabled == false) { return; }
         consumer.accept(this);
-        children.forEach(child -> child.traverse(consumer));
+        try {
+            children.forEach(child -> child.traverse(consumer));
+        } catch (Exception error) {} // ignore ConcurrentModificationException
+    }
+
+    public void enabled(boolean enabled) {
+        this.enabled = enabled;
+        all(component -> component.enabled(enabled));
+    }
+
+    public boolean enabled() {
+        return enabled;
     }
 
     /// apply a consumer to each enabled component of this entity
     /// @param consumer the consumer to apply to each enabled component of this entity
     public void each(Consumer<Component> consumer) {
         components.values().stream().filter(Component::enabled).forEach(consumer);
+    }
+
+    /// apply a consumer to all components of this entity, regardless of enabled state
+    /// @param consumer the consumer to apply to all components of this entity
+    public void all(Consumer<Component> consumer) {
+        components.values().forEach(consumer);
     }
 
     /// put component on this entity
@@ -144,7 +187,7 @@ public class Entity {
     /// @param type the component type to get from this entity
     /// @return <T> the component instance, if present, otherwise null
     public <T extends Component> T get(Class<T> type) {
-        return (T) components.get(type);
+        return type.cast(components.get(type));
     }
 
     /// test if this entity has a component instance of the component type
@@ -152,6 +195,10 @@ public class Entity {
     /// @return boolean true if this entity has a component instance of the component type
     public <T extends Component> boolean has(Class<T> type) {
         return components.containsKey(type) && components.get(type) != null;
+    }
+
+    public boolean has(String identifier) {
+        return has(GameEngine.components.get(identifier));
     }
 
     /// ensure that this entity has a component instance of the component type, if not, generate a new component instance to put into this component type
@@ -164,5 +211,53 @@ public class Entity {
 
     public Entity parent() {
         return parent;
+    }
+
+    public Collection<Entity> children() {
+        return children;
+    }
+
+    /// destroy this entity and all its children from existence
+    public void destroy() {
+        enabled(false);
+        children.forEach(Entity::destroy);
+        parent.abort(this);
+    }
+
+    /// abort the child from this parent entity
+    /// @param child the child entity to abort from this parent entity
+    /// @return the aborted child entity
+    private Entity abort(Entity child) {
+        GameEngine.LOGGER.debug("[Entity::abort] aborting child: {} from parent: {}", child.name, this.name);
+        children.remove(child);
+        child.parent = null;
+        return child;
+    }
+
+    public Iterable<Entity> successors() {
+        return new Iterable<Entity>() {
+            @Override
+            public Iterator<Entity> iterator() {
+                return new Iterator<Entity>() {
+                    private final Stack<Entity> stack = new Stack<>();
+
+                    {
+                        stack.push(Entity.this);
+                    }
+
+                    @Override
+                    public boolean hasNext() {
+                        return !stack.isEmpty();
+                    }
+
+                    @Override
+                    public Entity next() {
+                        Entity entity = stack.pop();
+                        entity.children.forEach(stack::push);
+                        return entity;
+                    }
+                };
+            }
+        };
     }
 }

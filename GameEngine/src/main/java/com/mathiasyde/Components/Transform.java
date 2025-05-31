@@ -63,4 +63,8 @@ public class Transform extends Component {
         this.scale = transform.scale;
         this.rotation = transform.rotation;
     }
+
+    public void angle(float angle) {
+        rotation = angle;
+    }
 }
