@@ -11,7 +11,6 @@ public class ScoreDisplay extends Component {
     @Override
     public void start() {
         player = GameEngine.cache("player");
-        System.out.println("ScoreDisplay started");
     }
 
     @Override
@@ -19,7 +18,7 @@ public class ScoreDisplay extends Component {
         int lives = (int)player.dispatch("player", "getLives");
         int score = (int)player.dispatch("player", "getScore");
 
-        layer.graphics.fillText("Lives: " + lives, 10.0, 10.0);
-        layer.graphics.fillText("Score: " + score, 10.0, 20.0);
+        layer.graphics.fillText("Lives: " + lives, 10.0, 24.0);
+        layer.graphics.fillText("Score: " + score, 10.0, 32.0);
     }
 }

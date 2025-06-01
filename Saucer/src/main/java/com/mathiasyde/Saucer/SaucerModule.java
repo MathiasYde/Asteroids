@@ -20,7 +20,7 @@ public class SaucerModule extends GameModule {
     @Override
     public void start() {
         Entity spawner = GameEngine.root.spawn("SaucerSpawner");
-        spawner.put(new TimedSpawner(SaucerModule::saucer));
+        spawner.put(new TimedSpawner(SaucerModule::saucer, 6.0f));
 
         GameEngine.cache("saucer_spawner", spawner);
     }

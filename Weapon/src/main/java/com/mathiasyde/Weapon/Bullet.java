@@ -40,7 +40,6 @@ public class Bullet extends Component {
 
 
             if (entity.has("saucer")) {
-                System.out.println("Hit saucer");
                 entity.destroy();
             }
 
@@ -50,7 +49,6 @@ public class Bullet extends Component {
             }
 
             if (entity.has("asteroid")) {
-                System.out.println("Hit asteroid");
                 Entity player = GameEngine.cache("player");
                 player.dispatch("score", 100);
                 entity.destroy();

@@ -18,7 +18,7 @@ public class AsteroidModule extends GameModule {
     @Override
     public void awake() {
         Entity spawner = GameEngine.root.spawn("AsteroidSpawner");
-        spawner.put(new TimedSpawner(AsteroidModule::asteroid));
+        spawner.put(new TimedSpawner(AsteroidModule::asteroid, 4.0f));
         GameEngine.cache("asteroid_spawner", spawner);
     }
 

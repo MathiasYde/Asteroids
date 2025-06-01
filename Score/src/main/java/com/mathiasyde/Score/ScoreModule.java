@@ -11,6 +11,5 @@ public class ScoreModule extends GameModule {
         score.put(new ScoreDisplay());
         GameEngine.root.spawn(score);
         GameEngine.cache("score", score);
-        System.out.println("ScoreModule started");
     }
 }

@@ -24,11 +24,6 @@ public class Player extends Component {
     public void start() {
     }
 
-    @Override
-    public void update() {
-        System.out.println(Time.totalTime + " - Player update");
-    }
-
     public void score(Integer points) {
         score += points;
     }

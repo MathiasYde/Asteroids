@@ -11,7 +11,7 @@ public class Weapon extends Component {
     private Transform transform;
     private Spawner spawner;
 
-    private final float cooldown = 0.5f;
+    private float cooldown = 0.5f;
     private float timer = 0.0f;
 
     @Override
@@ -22,6 +22,10 @@ public class Weapon extends Component {
     @Override
     public void start() {
         spawner = GameEngine.cache("bullet_spawner").get(Spawner.class);
+        if (entity.name().equals("player") == false) {
+            this.cooldown = 4.0f;
+            this.timer = 4.0f;
+        }
     }
 
     @Override

@@ -9,8 +9,9 @@ public class TimedSpawner extends Spawner {
     public float time = 2.0f;
     public float cooldown = 2.0f;
 
-    public TimedSpawner(Function<Spawner, Entity> prototype) {
+    public TimedSpawner(Function<Spawner, Entity> prototype, float cooldown) {
         super(prototype);
+        this.cooldown = cooldown;
     }
 
     @Override

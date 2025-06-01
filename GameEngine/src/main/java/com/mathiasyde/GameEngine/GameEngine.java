@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -78,7 +79,6 @@ public class GameEngine extends Application {
         components.register("line", LineRender.class);
         components.register("collider", Collider.class);
 
-        System.out.println("modules: " + modules.values());
         modules.forEach((__, module) -> module.register());
         modules.forEach((__, module) -> module.awake());
         modules.forEach((__, module) -> module.start());
